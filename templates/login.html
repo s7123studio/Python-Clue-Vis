@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <!-- 设置文档类型和语言 -->
+    <meta charset="UTF-8">
+    <!-- 确保页面在各种设备上都能正常显示 -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <title>系统登录</title>
+    <style>
+        /* 页面整体样式 */
+        body {
+            font-family: Arial, sans-serif; /* 使用通用字体，确保文字清晰可读 */
+            background-color: #212121; /* 灰色背景 */
+            display: flex; /* 使用弹性布局，让登录框居中显示 */
+            justify-content: center; /* 水平居中 */
+            align-items: center; /* 垂直居中，确保在各种屏幕上都能看到 */
+            height: 100vh; /* 占满整个视口高度 */
+            margin: 0; /* 去掉默认边距，让页面更整洁 */
+        }
+        /* 登录容器样式 */
+        .login-container {
+            background-color: rgb(57, 57, 57); /* 白色背景 */
+            padding: 30px; /* 内边距，给内容留出呼吸空间 */
+            border-radius: 8px; /* 圆角边框，让界面更友好 */
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* 轻微阴影，增加立体感 */
+            width: 300px; /* 固定宽度，确保在各种设备上看起来一致 */
+        }
+        /* 标题样式 */
+        h2 {
+            text-align: center; /* 居中显示，更加醒目 */
+            color: #d8d8d8; /* 易于阅读 */
+            margin-bottom: 20px; /* 底部留出空间，与表单内容分隔 */
+        }
+        /* 表单组样式，每个输入项的容器 */
+        .form-group {
+            margin-bottom: 15px; /* 底部留出空间，分隔各个输入项 */
+        }
+        /* 标签样式，输入框的说明文字 */
+        label {
+            display: block; /* 块级显示，独占一行 */
+            margin-bottom: 5px; /* 底部留出小空间，与输入框分隔 */
+            color: #d8d8d8; /* 清晰但不突兀 */
+        }
+        /* 输入框样式*/
+        input[type="text"], input[type="password"] {
+            width: 100%; /* 占满容器宽度 */
+            padding: 8px; /* 内边距，让输入内容不贴边 */
+            border: 1px solid #6e6e6e; /* 浅灰色边框，清晰但不突兀 */
+            color: #d8d8d8; /* 白色文字 */
+            border-radius: 4px; /* 小圆角，让输入框看起来更友好 */
+            box-sizing: border-box; /* 盒模型计算方式，确保padding不会影响总宽度 */
+        }
+        /* 按钮样式 */
+        button {
+            width: 100%; /* 占满容器宽度 */
+            padding: 10px; /* 内边距，让按钮看起来更舒适 */
+            background-color: #4CAF50; /* 绿色背景，表示可以安全通过 */
+            color: white; /* 白色文字，在绿色背景上清晰可见 */
+            border: none; /* 去掉边框，让按钮更简洁 */
+            border-radius: 4px; /* 小圆角，与输入框保持一致 */
+            cursor: pointer; /* 鼠标悬停时显示手型，提示可以点击 */
+            font-size: 16px; /* 字体大小，确保文字清晰可读 */
+        }
+        /* 按钮悬停效果 */
+        button:hover {
+            background-color: #45a049; /* 深一点的绿色，提供视觉反馈 */
+        }
+        /* 错误消息样式，系统的警告提示 */
+        .error-message {
+            color: red; /* 红色文字，表示错误或警告 */
+            text-align: center; /* 居中显示，更加醒目 */
+            margin-top: 10px; /* 顶部留出空间，与表单分隔 */
+            display: none; /* 默认隐藏，只在需要时显示 */
+        }
+    </style>
+</head>
+<body>
+    <!-- 登录容器 -->
+    <div class="login-container">
+        <h2>管理员登录</h2>
+        <!-- 登录表单， -->
+        <form id="login-form">
+            <!-- 用户名输入组 -->
+            <div class="form-group">
+                <label for="username">用户名</label>
+                <input type="text" id="username" name="username" required>
+            </div>
+            <!-- 密码输入组 -->
+            <div class="form-group">
+                <label for="password">密码</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+            <!-- 登录按钮 -->
+            <button type="submit">登录</button>
+            <!-- 错误消息区域，默认隐藏 -->
+            <div id="error-message" class="error-message">用户名或密码错误</div>
+        </form>
+    </div>
+
+    <script>
+        // 监听登录表单的提交事件，系统等待用户输入
+        document.getElementById('login-form').addEventListener('submit', async function(e) {
+            e.preventDefault(); // 阻止表单默认提交行为，让我们自己处理登录逻辑
+            
+            // 获取用户输入的用户名和密码，读取卡上的信息
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            
+            // 获取CSRF令牌
+            const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+            
+            try {
+                // 向服务器发送登录请求，将卡信息发送给验证系统
+                const response = await fetch('/login', {
+                    method: 'POST', // 使用POST方法，确保密码不会在URL中暴露
+                    headers: {
+                        'Content-Type': 'application/json', // 告诉服务器我们发送的是JSON数据
+                        'X-CSRFToken': csrfToken // 添加CSRF令牌到请求头
+                    },
+                    body: JSON.stringify({ username, password }) // 将用户名和密码转换为JSON格式
+                });
+                
+                // 解析服务器返回的响应数据
+                const data = await response.json();
+                
+                // 检查登录是否成功
+                if (response.ok) {
+                    // 登录成功，重定向到主页，系统验证通过
+                    window.location.href = '/';
+                } else {
+                    // 登录失败，显示错误消息，系统提示验证失败
+                    document.getElementById('error-message').style.display = 'block';
+                }
+            } catch (error) {
+                // 网络错误或其他异常，也显示错误消息，系统出现故障时的提示
+                document.getElementById('error-message').style.display = 'block';
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <!-- 设置文档类型和语言，告诉浏览器这是一份中文档案 -->
+    <meta charset="UTF-8">
+    <!-- 确保页面在各种设备上都能正常显示，让线索板适应不同大小的桌子 -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- CSRF令牌，用于防止跨站请求伪造攻击 -->
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <title>线索管理系统</title>
+    <!-- 引入样式表 -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <!-- 搜索和分析工具区，工具箱，帮我们快速找到和分析线索 -->
+    <div id="search-analysis-container">
+        <!-- 搜索区域，放大镜，帮我们在众多线索中快速找到目标 -->
+        <div id="search-container">
+            <input type="text" id="search-box" placeholder="搜索线索...">
+        </div>
+
+        <!-- 分析工具区域，分析仪器，帮我们发现线索之间的隐藏关系 -->
+        <div id="analysis-container">
+            <button id="analysis-btn">分析模式</button>
+            <!-- 分析选项下拉菜单，分析工具包 -->
+            <div id="analysis-menu" class="dropdown-content">
+                <a href="#" id="highlight-key-nodes">高亮关键节点</a>
+                <a href="#" id="isolate-nodes">识别孤立节点</a>
+                <a href="#" id="clear-analysis">清除分析</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- 线索板区域，办案板，我们在这里摆放和连接所有线索 -->
+    <div id="clue-board">
+        <!-- 画布区域，磁性白板，可以自由移动和排列线索卡片 -->
+        <div id="canvas"></div>
+    </div>
+
+    <!-- 线索编辑弹窗，线索卡片填写台 -->
+    <div id="clue-modal" class="modal">
+        <div class="modal-content">
+            <h2 id="clue-modal-title">创建线索</h2>
+            <!-- 线索信息表单，线索记录本 -->
+            <form id="clue-form">
+                <!-- 隐藏的线索ID，用于区分是新建还是编辑线索 -->
+                <input type="hidden" id="clue-id">
+                <!-- 线索标题，线索卡片的主题，必须填写 -->
+                <input type="text" id="clue-title" placeholder="标题" required>
+                <!-- 线索内容，卡片上详细记录的信息 -->
+                <textarea id="clue-content" placeholder="内容"></textarea>
+                <!-- 时间戳设置区域，记录线索发生的时间 -->
+                <div>
+                    <label for="clue-timestamp">时间戳:</label>
+                    <input type="datetime-local" id="clue-timestamp">
+                    <!-- 时间未知选项，用于处理没有明确时间的线索 -->
+                    <input type="checkbox" id="clue-time-unknown">
+                    <label for="clue-time-unknown">未知</label>
+                </div>
+                <!-- 图片上传区域，给线索卡片附上照片 -->
+                <label for="clue-image-upload">上传图片:</label>
+                <input type="file" id="clue-image-upload" accept="image/*">
+                <!-- 隐藏的图片URL，存储已上传图片的路径 -->
+                <input type="hidden" id="clue-image-url">
+                <!-- 表单按钮 -->
+                <button type="submit">保存</button>
+                <button type="button" id="cancel-clue-modal">取消</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- 右键菜单，快捷工具箱，根据不同情况提供不同操作 -->
+    <div id="context-menu" class="context-menu"></div>
+
+    <!-- 隐藏的文件导入输入框，后台的数据导入通道 -->
+    <input type="file" id="import-file-input" style="display: none;" accept=".json">
+
+    <!-- 引入外部JavaScript库 -->
+    <!-- Panzoom库：让我们的线索板可以缩放和拖动，调整线索板的视角 -->
+    <script src="https://cdn.jsdelivr.net/npm/panzoom@9.4.3/dist/panzoom.min.js"></script>
+    <!-- LeaderLine库：帮我们在线索之间画连接线，用连线连接相关线索 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leader-line/1.0.7/leader-line.min.js"></script>
+    <!-- Interact.js库：让线索卡片可以拖动，在真实线索板上移动卡片 -->
+    <script src="https://cdn.jsdelivr.net/npm/interactjs/dist/interact.min.js"></script>
+    <!-- 引入我们的主JavaScript文件，指挥中心，协调所有功能 -->
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>

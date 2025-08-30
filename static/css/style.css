@@ -1,0 +1,432 @@
+/* 页面基础样式 */
+body, html {
+    margin: 0; /* 去掉默认外边距，让页面内容紧贴浏览器边缘 */
+    padding: 0; /* 去掉默认内边距，最大化利用空间 */
+    width: 100%; /* 宽度占满整个屏幕 */
+    height: 100%; /* 高度占满整个屏幕，确保没有空白区域 */
+    background-color: #1a1a1a; /* 深色背景 */
+    color: #fff; /* 白色文字，在深色背景上清晰可见 */
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* 使用现代字体，确保文字清晰易读 */
+    overflow: hidden; /* 隐藏溢出内容，防止滚动条出现，保持界面整洁 */
+    /* 禁用文本选择，给线索板加上保护罩，防止意外选中文字 */
+    user-select: none; /* 标准属性 */
+    -webkit-user-select: none; /* Safari浏览器支持 */
+    -moz-user-select: none; /* Firefox浏览器支持 */
+    -ms-user-select: none; /* IE浏览器支持 */
+}
+
+/* 搜索和分析工具容器，放在左上角方便取用 */
+#search-analysis-container {
+    position: absolute; /* 绝对定位，固定在页面左上角 */
+    top: 15px; /* 距离顶部15像素，给页面留出呼吸空间 */
+    left: 15px; /* 距离左侧15像素，与边缘保持适当距离 */
+    z-index: 20; /* 高层显示，确保不会被其他元素遮挡 */
+    display: flex; /* 使用弹性布局，让内部元素水平排列 */
+    align-items: center; /* 垂直居中对齐，让工具看起来更整齐 */
+    background-color: rgba(43, 43, 43, 0.9); /* 半透明深灰背景，既突出又不突兀 */
+    border-radius: 25px; /* 大圆角 */
+    padding: 5px; /* 内边距，给内部元素留出空间 */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3); /* 阴影效果，增加立体感 */
+    transition: all 0.3s ease; /* 平滑过渡效果，让交互更流畅 */
+}
+
+/* 鼠标悬停在工具箱上时的效果 */
+#search-analysis-container:hover {
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4); /* 增强阴影效果，提供视觉反馈 */
+}
+
+/* 搜索区域容器 */
+#search-container {
+    position: relative; /* 相对定位，为内部元素提供定位参考 */
+    transition: all 0.3s ease; /* 平滑过渡效果，让交互更流畅 */
+}
+
+/* 搜索输入框，放大镜，帮我们快速找到线索 */
+#search-box {
+    padding: 10px 15px; /* 内边距，让输入内容不贴边 */
+    border: none; /* 去掉边框，让输入框更简洁 */
+    border-radius: 20px; /* 大圆角，与工具箱风格保持一致 */
+    background-color: transparent; /* 透明背景，融入工具箱 */
+    color: #fff; /* 白色文字，在深色背景上清晰可见 */
+    width: 200px; /* 固定宽度，确保在各种设备上看起来一致 */
+    font-size: 14px; /* 字体大小，确保文字清晰可读 */
+    outline: none; /* 去掉聚焦时的轮廓，保持界面整洁 */
+}
+
+/* 搜索框占位符样式 */
+#search-box::placeholder {
+    color: #aaa; /* 浅灰色文字，比实际输入的文字更淡，表示提示 */
+}
+
+/* 分析工具容器 */
+#analysis-container {
+    position: relative; /* 相对定位，为下拉菜单提供定位参考 */
+    margin-left: 5px; /* 左侧留出小空间，与搜索框分隔 */
+    transition: all 0.3s ease; /* 平滑过渡效果，让交互更流畅 */
+}
+
+/* 分析按钮*/
+#analysis-btn {
+    padding: 10px 15px; /* 内边距，让按钮看起来更舒适 */
+    border: none; /* 去掉边框，让按钮更简洁 */
+    border-radius: 20px; /* 大圆角，与工具箱风格保持一致 */
+    background-color: #2b2b2b; /* 深灰色背景，与工具箱融为一体 */
+    color: #fff; /* 白色文字，在深色背景上清晰可见 */
+    cursor: pointer; /* 鼠标悬停时显示手型，提示可以点击 */
+    transition: all 0.3s ease; /* 平滑过渡效果，让交互更流畅 */
+    font-size: 14px; /* 字体大小，确保文字清晰可读 */
+    font-weight: 500; /* 中等字重，让文字更加醒目 */
+}
+
+/* 分析按钮悬停效果 */
+#analysis-btn:hover {
+    background-color: #3a3a3a; /* 稍微变亮的背景，提供视觉反馈 */
+}
+
+/* 分析按钮按下效果 */
+#analysis-btn:active {
+    background-color: #1a1a1a; /* 变暗的背景，模拟按下效果 */
+}
+
+/* 下拉菜单内容 */
+.dropdown-content {
+    display: none; /* 默认隐藏，只在需要时显示 */
+    position: absolute; /* 绝对定位，相对于分析按钮定位 */
+    background-color: #2b2b2b; /* 深灰色背景，与工具箱风格一致 */
+    min-width: 180px; /* 最小宽度，确保菜单内容有足够空间 */
+    border-radius: 10px; /* 圆角边框，让菜单看起来更友好 */
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3); /* 阴影效果，增加立体感 */
+    z-index: 1; /* 确保显示在其他元素之上 */
+    border: 1px solid #444; /* 边框，让菜单边界更清晰 */
+    overflow: hidden; /* 隐藏溢出内容，保持界面整洁 */
+    opacity: 0; /* 初始透明度为0，为动画做准备 */
+    transform: translateY(-10px); /* 初始位置向上偏移，为动画做准备 */
+    transition: all 0.3s ease; /* 平滑过渡效果，让动画更流畅 */
+    top: 100%; /* 定位在按钮下方 */
+    left: 0; /* 左对齐，与按钮保持一致 */
+    margin-top: 2px; /* 顶部留出小空间，与按钮分隔 */
+}
+
+/* 下拉菜单中的链接*/
+.dropdown-content a {
+    color: #fff; /* 白色文字，在深色背景上清晰可见 */
+    padding: 12px 18px; /* 内边距，让选项看起来更舒适 */
+    text-decoration: none; /* 去掉下划线，让界面更简洁 */
+    display: block; /* 块级显示，占满整行 */
+    transition: all 0.2s ease; /* 平滑过渡效果，让交互更流畅 */
+    position: relative; /* 相对定位，为内部元素提供定位参考 */
+    overflow: hidden; /* 隐藏溢出内容，保持界面整洁 */
+}
+
+/* 下拉菜单链接悬停效果*/
+.dropdown-content a:hover {
+    background-color: #3a3a3a; /* 稍微变亮的背景，提供视觉反馈 */
+    padding-left: 22px; /* 左侧内边距增加，产生向右滑动的效果 */
+}
+
+/* 当鼠标悬停在分析容器上或菜单上时*/
+#analysis-container:hover .dropdown-content,
+.dropdown-content:hover {
+    display: block; /* 显示菜单 */
+    opacity: 1; /* 完全不透明 */
+    transform: translateY(0); /* 回到正常位置 */
+}
+
+/* 增加悬停区域，使菜单在鼠标离开按钮和菜单之间的小间隙时保持显示 */
+#analysis-container::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: -10px; /* 向下扩展悬停区域 */
+    z-index: -1; /* 确保不会阻挡其他元素 */
+}
+
+
+#clue-board {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    overflow: hidden; /* This is the viewport */
+}
+
+#canvas {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    transform-origin: 0 0; /* Important for zooming */
+}
+
+.clue-node {
+    position: absolute;
+    background-color: #2b2b2b;
+    border: 1px solid #444;
+    border-radius: 8px;
+    padding: 15px;
+    width: -moz-fit-content;
+    width: fit-content;
+    min-width: 140px;
+    max-width: 320px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+    cursor: move;
+    display: flex;
+    flex-direction: column;
+    transition: all 0.3s ease;
+    transform: translateZ(0);
+}
+
+.clue-node:hover {
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+    border-color: #555;
+}
+
+.clue-node.filtered {
+    opacity: 0.2;
+    pointer-events: none;
+}
+
+.clue-node.analysis-dimmed {
+    opacity: 0.3;
+}
+
+.clue-node.analysis-highlight {
+    box-shadow: 0 0 20px 5px rgba(255, 255, 255, 0.3);
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% {
+        box-shadow: 0 0 20px 5px rgba(255, 255, 255, 0.3);
+        transform: translateY(-3px) scale(1);
+    }
+    50% {
+        box-shadow: 0 0 25px 10px rgba(255, 255, 255, 0.2);
+        transform: translateY(-5px) scale(1.02);
+    }
+    100% {
+        box-shadow: 0 0 20px 5px rgba(255, 255, 255, 0.3);
+        transform: translateY(-3px) scale(1);
+    }
+}
+
+
+.leader-line.filtered {
+    opacity: 0.1;
+    transition: opacity 0.3s ease;
+}
+
+.line-hitbox {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0);
+    transform: translate(-50%, -50%);
+    cursor: pointer;
+    z-index: 10;
+    transition: all 0.2s ease;
+    pointer-events: auto;
+}
+
+.line-hitbox:hover {
+    background-color: rgba(255, 255, 255, 0.4);
+    transform: translate(-50%, -50%) scale(1.5);
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+}
+
+.clue-node .timestamp {
+    font-size: 10px;
+    color: #888;
+    margin-top: 10px;
+    align-self: flex-start;
+}
+
+.clue-node h3 {
+    margin: 0 0 12px 0;
+    font-size: 18px;
+    border-bottom: 1px solid #444;
+    padding-bottom: 8px;
+    color: #fff;
+    font-weight: 600;
+}
+
+.clue-node p {
+    margin: 0;
+    font-size: 14px;
+    flex-grow: 1;
+    word-wrap: break-word;
+}
+
+.clue-node img {
+    max-width: 100%;
+    border-radius: 3px;
+    margin-bottom: 10px;
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    background-color: #2b2b2b;
+    padding: 25px;
+    border-radius: 8px;
+    width: 320px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+    border: 1px solid #444;
+    animation: modalFadeIn 0.3s ease-out;
+}
+
+@keyframes modalFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.modal-content form {
+    display: flex;
+    flex-direction: column;
+}
+
+.modal-content input, .modal-content textarea, .modal-content button {
+    margin-bottom: 12px;
+    padding: 10px 15px;
+    border-radius: 5px;
+    border: 1px solid #444;
+    background-color: #1a1a1a;
+    color: #fff;
+    transition: all 0.2s ease;
+    font-size: 14px;
+}
+
+.modal-content input:focus, .modal-content textarea:focus {
+    outline: none;
+    border-color: #555;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+}
+
+.modal-content button {
+    margin-bottom: 12px;
+    padding: 10px 15px;
+    border-radius: 5px;
+    border: 1px solid #444;
+    background-color: #3a3a3a;
+    color: #fff;
+    transition: all 0.2s ease;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.modal-content button:hover {
+    background-color: #4a4a4a;
+    border-color: #555;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+}
+
+.modal-content button:active {
+    background-color: #2a2a2a;
+}
+
+.modal-content button[type="submit"] {
+    background-color: #444;
+    border: 1px solid #555;
+}
+
+.modal-content button[type="submit"]:hover {
+    background-color: #555;
+    border-color: #666;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.4);
+}
+
+.modal-content button#cancel-clue-modal {
+    background-color: #333;
+}
+
+.modal-content button#cancel-clue-modal:hover {
+    background-color: #444;
+}
+
+.context-menu {
+    position: absolute;
+    background-color: #2b2b2b;
+    border: 1px solid #444;
+    border-radius: 8px;
+    padding: 8px 0;
+    z-index: 1001;
+    display: none; /* Initially hidden */
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+    min-width: 180px;
+    overflow: hidden;
+    animation: contextMenuFadeIn 0.2s ease-out;
+}
+
+.context-menu ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+@keyframes contextMenuFadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.95) translateY(-5px);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+.context-menu ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.context-menu li {
+    padding: 10px 18px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    position: relative;
+    overflow: hidden;
+    font-size: 14px;
+}
+
+.context-menu li:hover {
+    background-color: #3a3a3a;
+    padding-left: 22px;
+}
+
+.context-menu hr {
+    height: 1px;
+    background-color: #444;
+    margin: 8px 15px;
+    border: none;
+}
+
+.line-hitbox {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    transform: translate(-50%, -50%);
+    cursor: pointer;
+    z-index: 10;
+    /* For debugging, uncomment below */
+    /* background-color: rgba(255, 0, 0, 0.5); */
+}

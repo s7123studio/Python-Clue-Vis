@@ -67,7 +67,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 'X-CSRFToken': getCSRFToken()
             }, 
             body: JSON.stringify(data) 
-        }).then(res => res.json()),
+        }).then(res => {
+            if (!res.ok) {
+                return res.json().then(err => { throw err; });
+            }
+            return res.json();
+        }),
         updateConnection: (id, data) => fetch(`/api/connections/${id}`, { 
             method: 'PUT', 
             headers: { 
@@ -319,15 +324,23 @@ function cancelConnectionMode() {
  * @param {HTMLElement} targetNode - 目标线索节点
  */
 function completeConnection(targetNode) {
-    const sourceId = connectionStartNode.id.split('-')[1];
-    const targetId = targetNode.id.split('-')[1];
+    const sourceId = parseInt(connectionStartNode.id.split('-')[1]);
+    const targetId = parseInt(targetNode.id.split('-')[1]);
     if (sourceId === targetId) {
         cancelConnectionMode();
         return;
     }
     const comment = prompt("请输入此连接的注释（可选）:");
-    api.createConnection({ source_id: sourceId, target_id: targetId, comment: comment }).then(renderAllLines);
-    cancelConnectionMode();
+    api.createConnection({ source_id: sourceId, target_id: targetId, comment: comment })
+        .then(() => {
+            renderAllLines();
+            cancelConnectionMode();
+        })
+        .catch(error => {
+            console.error('创建连接失败:', error);
+            alert('创建连接失败: ' + (error.message || '未知错误'));
+            cancelConnectionMode();
+        });
 }
 
     // --- 模态框和菜单功能 ---
@@ -393,7 +406,7 @@ function showContextMenu(x, y, target) {
 
     if (targetClueNode) {
         // 点击的是线索节点
-        const targetClueId = targetClueNode.id.split('-')[1];
+        const targetClueId = parseInt(targetClueNode.id.split('-')[1]);
         menuItems += `<li data-action="edit-clue" data-id="${targetClueId}">编辑线索</li>`;
         menuItems += `<li data-action="delete-clue" data-id="${targetClueId}">删除线索</li>`;
         menuItems += `<hr>`;
@@ -537,13 +550,13 @@ function handleContextMenuClick(e) {
             const oldComment = e.target.dataset.comment;
             const newComment = prompt("编辑连接注释:", oldComment);
             if (newComment !== null) {
-                api.updateConnection(id, { comment: newComment }).then(renderAllLines);
+                api.updateConnection(parseInt(id), { comment: newComment }).then(renderAllLines);
             }
             break;
         case 'delete-conn':
             // 删除连接
             if (confirm('您确定要删除此连接吗？')) {
-                api.deleteConnection(id).then(renderAllLines);
+                api.deleteConnection(parseInt(id)).then(renderAllLines);
             }
             break;
         case 'import':

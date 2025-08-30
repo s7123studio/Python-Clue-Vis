@@ -60,11 +60,24 @@ def add_security_headers(response):
 def sanitize_input(text):
     if text is None:
         return None
-    # 使用bleach清理HTML标签和危险内容
+    # 定义允许的安全HTML标签
+    allowed_tags = [
+        'br', 'p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
+        'strong', 'em', 'i', 'b', 'u',
+        'ul', 'ol', 'li', 'dl', 'dt', 'dd',
+        'blockquote', 'code', 'pre',
+        'a', 'img'
+    ]
+    # 定义允许的属性
+    allowed_attributes = {
+        'a': ['href', 'title'],
+        'img': ['src', 'alt', 'title']
+    }
+    # 使用bleach清理HTML标签和危险内容，但允许安全标签
     return bleach.clean(
         text,
-        tags=[],  # 不允许任何HTML标签
-        attributes={},
+        tags=allowed_tags,
+        attributes=allowed_attributes,
         strip=True
     )
 
@@ -220,7 +233,7 @@ def get_connections():
 
 # 创建新连接，用连线连接两个相关线索
 # 在两个线索之间建立关联关系
-@app.route('/api/connections', methods=['post'])
+@app.route('/api/connections', methods=['POST'])
 @login_required
 def create_connection():
     data = request.json

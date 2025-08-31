@@ -5,7 +5,7 @@ PCV，Python+Flask的线索可视化管理平台，轻量级，易部署
 ## 项目简介
 
 Python-Clue-Vis是一个基于Python和Flask开发的线索可视化管理平台，旨在帮助用户以可视化的方式管理和分析线索之间的关系。该平台提供了直观的界面，可以可视化创建、编辑、连接线索，并通过分析模式发现线索之间的隐藏关系。
-
+![Python-Clue-Vis](https://store.s7123.xyz/wp-content/uploads/2025/08/20250830224325545-f7aa39a4fabc4d79cfaf4dfc36cf01d2.webp)
 ## 功能特性
 
 - **线索管理**：创建、编辑、删除线索，支持添加标题、内容、图片和时间戳
@@ -72,6 +72,7 @@ python app.py
 应用将在 http://127.0.0.1:5000/ 上运行。
 
 ### 7. 登录系统
+默认后台URL：/AdminLogin （建议替换）
 
 使用默认管理员账户登录：
 - 用户名：admin

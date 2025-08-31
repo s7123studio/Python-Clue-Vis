@@ -614,19 +614,48 @@ async function handleClueFormSubmit(e) {
     };
 
     // 完成后的操作
-    const onComplete = () => {
-        api.getClues().then(allClues => {
-            canvas.innerHTML = '';
-            clues = {};
-            allClues.forEach(renderClue);
-            renderAllLines();
-        });
+    const onComplete = (updatedClue) => {
+        if (id) {
+            // 更新现有节点
+            const clueNode = clues[id];
+            if (clueNode) {
+                // 更新本地数据
+                clueNode.data = updatedClue;
+                // 重新渲染该节点
+                renderClue(updatedClue);
+                // 更新连接线
+                renderAllLines();
+            }
+        } else {
+            // 新建节点时需要重新获取所有数据，因为新节点的ID是服务器生成的
+            api.getClues().then(allClues => {
+                canvas.innerHTML = '';
+                clues = {};
+                allClues.forEach(renderClue);
+                renderAllLines();
+            });
+        }
         hideClueModal();
     };
 
     // 根据是否有ID决定是更新还是创建
     if (id) {
-        api.updateClue(id, data).then(onComplete);
+        api.updateClue(id, data).then(response => {
+            // 获取更新后的线索数据
+            api.getClues().then(allClues => {
+                const updatedClue = allClues.find(clue => clue.id == id);
+                if (updatedClue) {
+                    onComplete(updatedClue);
+                } else {
+                    console.error('无法找到更新后的线索数据');
+                    alert('更新线索后无法获取最新数据，请刷新页面');
+                    hideClueModal();
+                }
+            });
+        }).catch(error => {
+            console.error('更新线索失败:', error);
+            alert('更新线索失败: ' + (error.message || '未知错误'));
+        });
     } else {
         data.pos_x = lastMousePos.x;
         data.pos_y = lastMousePos.y;
